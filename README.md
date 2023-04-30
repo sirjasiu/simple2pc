@@ -202,7 +202,9 @@ docker-compose up -d
 ```
 
 > NOTE: **docker-compose-dev.yml** is for development purpose, it sets up databases for both account and offer 
-> services, you can run it with _docker-compose -f docker-compose-dev.yml up -d_ 
+> services, you can run it with _docker-compose -f docker-compose-dev.yml up -d_
+
+Check [examples](examples) folder for example requests. 
 
 ## Checklist
 - [x] common-jobs
