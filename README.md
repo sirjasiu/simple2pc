@@ -172,7 +172,7 @@ This operation if allowed ends up with 202 status code and delivers url to job t
 
 ## Kong
 
-Kong's configuration delivers several functionalities necessary for this solution (see `kong/kong.yaml`):
+Kong's configuration delivers several functionalities necessary for this solution (see [kong/kong.yaml](/kong/kong.yaml)):
 1. it exposes `/api/v1/accounts*` and `/api/v1/offers*` endpoints (note that services are not exposed themselves)
 2. it forbids access to `*/prepare-actions` endpoints, those are available only in the internal network
 3. it provides translation from one method's body to another (in account when we are making purchase action must be 
