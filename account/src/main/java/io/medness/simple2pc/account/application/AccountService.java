@@ -8,7 +8,6 @@ import io.medness.simple2pc.account.application.port.in.Withdraw;
 import io.medness.simple2pc.account.application.port.out.LoadAccount;
 import io.medness.simple2pc.account.application.port.out.PersistAccount;
 import io.medness.simple2pc.account.domain.Account;
-import io.medness.simple2pc.account.domain.AccountNotFoundException;
 import io.medness.simple2pc.account.domain.WithdrawJobData;
 import io.medness.simple2pc.job.application.port.in.PrepareJob;
 import io.medness.simple2pc.job.domain.Job;
@@ -18,7 +17,6 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 @Service
 @Transactional

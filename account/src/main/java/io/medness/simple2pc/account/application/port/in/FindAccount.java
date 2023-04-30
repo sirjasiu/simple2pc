@@ -1,6 +1,5 @@
 package io.medness.simple2pc.account.application.port.in;
 
-import io.medness.simple2pc.account.AccountApplication;
 import io.medness.simple2pc.account.domain.Account;
 import io.medness.simple2pc.account.domain.AccountNotFoundException;
 

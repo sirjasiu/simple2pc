@@ -1,8 +1,6 @@
 package io.medness.simple2pc.offer.domain;
 
 
-import org.springframework.stereotype.Component;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -25,7 +23,7 @@ public class Offer {
     private UUID accountId;
 
     private boolean reservation;
-    
+
     protected Offer() {
     }
 
@@ -59,33 +57,26 @@ public class Offer {
         if (price.compareTo(funds) != 0) {
             throw new InsufficientFundsException();
         }
-        if(this.accountId != null) {
-            if (this.accountId.equals(accountId)) {
-                if (reservation) {
-                    reservation = false;
-                }
-            } else {
-                throw new AlreadyPurchasedException();
-            }
-        } else {
-            this.accountId = accountId;
+        if (this.accountId != null && !this.accountId.equals(accountId)) {
+            throw new AlreadyPurchasedException();
         }
+        this.accountId = accountId;
+        this.reservation = false;
     }
 
     public void makeReservation(UUID accountId, BigDecimal funds) {
         if (price.compareTo(funds) != 0) {
             throw new InsufficientFundsException();
         }
-        if(this.accountId != null) {
+        if (this.accountId != null && !this.accountId.equals(accountId)) {
             throw new AlreadyPurchasedException();
-        } else {
-            this.accountId = accountId;
-            this.reservation = true;
         }
+        this.accountId = accountId;
+        this.reservation = true;
     }
 
     public void cancelReservation(UUID accountId) {
-        if(this.accountId != null && !this.accountId.equals(accountId)) {
+        if (this.accountId != null && !this.accountId.equals(accountId)) {
             throw new AlreadyPurchasedException();
         } else {
             this.accountId = null;

@@ -51,8 +51,6 @@ routes:
           message: "Not allowed"
     regex_priority: 100
   - name: accounts2pcInner
-    hosts:
-      - kong
     paths:
       - '~/api/v1/accounts/(?<accountId>\S+)/prepare-withdraw'
     service: account

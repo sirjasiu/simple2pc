@@ -1,18 +1,14 @@
 package io.medness.simple2pc.account.adapter.in.web;
 
 import com.jayway.jsonpath.JsonPath;
-import io.medness.simple2pc.account.adapter.out.AccountRepository;
 import io.medness.simple2pc.account.application.port.in.CreateAccount;
 import io.medness.simple2pc.account.application.port.in.Deposit;
 import io.medness.simple2pc.account.application.port.in.FindAccount;
 import io.medness.simple2pc.account.domain.Account;
-import io.medness.simple2pc.job.adapter.out.JobHandler;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -23,7 +19,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
