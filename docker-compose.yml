@@ -15,8 +15,8 @@ services:
 
   account:
     image: "simple2pc/account:latest"
-    ports:
-      - "8090:8080"
+#    ports:
+#      - "8090:8080"
     depends_on:
       - postgres_account
     environment:
@@ -24,9 +24,17 @@ services:
 
   offer:
     image: "simple2pc/offer:latest"
-    ports:
-      - "8090:8080"
+#    ports:
+#      - "8090:8080"
     depends_on:
       - postgres_offer
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_account:5432/postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_offer:5432/postgres
+
+  kong:
+    image: "simple2pc/kong:latest"
+    ports:
+      - "8001:8001"
+      - "8444:8444"
+      - "8000:8000"
+      - "8443:8443"

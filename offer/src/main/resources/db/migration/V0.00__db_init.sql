@@ -2,7 +2,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 create schema if not exists offer;
 
-create table offer.ofer
+create table offer.offer
 (
     id          uuid primary key,
     price       numeric(12, 2) not null,

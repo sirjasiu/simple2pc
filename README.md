@@ -170,6 +170,16 @@ Content-Type: application/json
 ```
 This operation if allowed ends up with 202 status code and delivers url to job that can be either committed or aborted.
 
+## Kong
+
+Kong's configuration delivers several functionalities necessary for this solution (see `kong/kong.yaml`):
+1. it exposes `/api/v1/accounts*` and `/api/v1/offers*` endpoints (note that services are not exposed themselves)
+2. it forbids access to `*/prepare-actions` endpoints, those are available only in the internal network
+3. it provides translation from one method's body to another (in account when we are making purchase action must be 
+   changed from _purchase_ to _withdraw_ and _price_ to _funds_) - this mapping is however only exposed internally, 
+   for call to host **kong**
+4. eventually it overrides the default `/api/v1/offers/{offerId}/actions` method and uses **simple2pc** plugin for 
+   performing distributed transaction
 
 ## Execution
 First build the project and all necessary docker images using build.sh script:
@@ -188,7 +198,7 @@ docker-compose up -d
 ## Checklist
 - [x] common-jobs
 - [x] account
-- [ ] offer
+- [X] offer
 - [X] docker images build
-- [ ] kong plugin
+- [X] kong plugin
 - [X] execution

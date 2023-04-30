@@ -1,0 +1,82 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: admin-api
+    url: http://127.0.0.1:8001
+    routes:
+      - paths:
+          - /admin-api
+  - host: account
+    name: account
+    port: 8080
+    protocol: http
+  - host: echo
+    name: echo
+    port: 80
+    protocol: http
+  - host: offer
+    name: offer
+    port: 8080
+    protocol: http
+
+routes:
+  - name: accounts
+    paths:
+      - /api/v1/accounts
+    strip_path: false
+    service: account
+    regex_priority: 0
+  - name: accounts2pcForbidden
+    paths:
+      - '~/api/v1/accounts/(?<accountId>\S+)/prepare-actions'
+    plugins:
+      - name: request-termination
+        config:
+          status_code: 403
+          message: "Not allowed"
+    regex_priority: 100
+  - name: offers
+    paths:
+      - /api/v1/offers
+    strip_path: false
+    service: offer
+  - name: offer2pcForbidden
+    paths:
+      - '~/api/v1/offers/(?<offerId>\S+)/prepare-actions'
+    plugins:
+      - name: request-termination
+        config:
+          status_code: 403
+          message: "Not allowed"
+    regex_priority: 100
+  - name: accounts2pcInner
+    hosts:
+      - kong
+    paths:
+      - '~/api/v1/accounts/(?<accountId>\S+)/prepare-withdraw'
+    service: account
+    plugins:
+      - name: request-transformer
+        config:
+          replace:
+            uri: /api/v1/accounts/$(uri_captures['accountId'])/prepare-actions
+            body:
+              - action:withdraw
+          rename:
+            body:
+              - price:funds
+          remove:
+            body:
+              - accountId
+    regex_priority: 120
+  - name: offerSimple2pc
+    paths:
+      - '~/api/v1/offers/(?<offerId>\S+)/actions'
+    plugins:
+      - name: simple2pc
+        config:
+          urls:
+            - http://offer:8080/api/v1/offers/${offerId}/prepare-actions
+            - http://kong:8000/api/v1/accounts/${accountId}/prepare-withdraw
+    regex_priority: 100
