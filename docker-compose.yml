@@ -1,0 +1,23 @@
+services:
+  postgres_account:
+    image: postgres:latest
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  postgres_offer:
+    image: postgres:latest
+    ports:
+      - "15433:5432"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  account:
+    image: "simple2pc/account:latest"
+    ports:
+      - "8090:8080"
+    depends_on:
+      - postgres_account
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_account:5432/postgres
