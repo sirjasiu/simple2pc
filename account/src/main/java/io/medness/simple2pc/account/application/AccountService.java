@@ -51,18 +51,11 @@ public class AccountService implements CreateAccount, FindAccount, Deposit, With
 
     @Override
     public void deposit(UUID accountId, BigDecimal value) {
-        executeOnAccount(accountId, account -> account.deposit(value));
+        get(accountId).deposit(value);
     }
 
     @Override
     public void withdraw(UUID accountId, BigDecimal value) {
-        executeOnAccount(accountId, account -> account.withdraw(value));
-    }
-
-    private void executeOnAccount(UUID accountId, Consumer<Account> operation) {
-        loadAccount.findById(accountId).ifPresentOrElse(
-                operation,
-                () -> { throw new AccountNotFoundException();}
-        );
+        get(accountId).withdraw(value);
     }
 }

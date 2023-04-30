@@ -21,3 +21,12 @@ services:
       - postgres_account
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_account:5432/postgres
+
+  offer:
+    image: "simple2pc/offer:latest"
+    ports:
+      - "8090:8080"
+    depends_on:
+      - postgres_offer
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_account:5432/postgres

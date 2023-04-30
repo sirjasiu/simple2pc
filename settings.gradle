@@ -2,5 +2,5 @@ rootProject.name = 'simple2pc'
 
 include 'common-jobs'
 include 'account'
-//include 'offer'
+include 'offer'
 
