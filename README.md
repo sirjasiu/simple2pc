@@ -70,6 +70,15 @@ Solution consist of two separate microservices:
 * account
 * offer.
 
+When user wants to puchase a product available in the offer service it needs to send action of purchasing the product and at the same time it must spend necessary funds controlled in the account service. Several cases may occur here:
+* happy path - user has necessary funds and offer is available,
+* user doesn't has required funds - product should not be sold,
+* user wants to buy product for insufficient price,
+* user wants to buy already bought product,
+* some problems during performing purchase operation may occur.
+
+In all cases except the happy path both user's funds and offer's state should be rolled back.
+
 ## Account
 
 In the account service simple account implementation is delivered, with account and funds it holds. Account can be 
@@ -202,3 +211,4 @@ docker-compose up -d
 - [X] docker images build
 - [X] kong plugin
 - [X] execution
+- [ ] example calls
