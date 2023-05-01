@@ -2,7 +2,6 @@ package io.medness.simple2pc.offer.application;
 
 import io.medness.simple2pc.job.application.port.in.PrepareJob;
 import io.medness.simple2pc.job.domain.Job;
-import io.medness.simple2pc.offer.application.job.PurchaseJobHandler;
 import io.medness.simple2pc.offer.application.port.in.CreateOffer;
 import io.medness.simple2pc.offer.application.port.in.FindOffer;
 import io.medness.simple2pc.offer.application.port.in.Purchase;
@@ -44,7 +43,7 @@ public class OfferService implements CreateOffer, FindOffer, Purchase, Reservati
 
     @Override
     public Job<PurchaseJobData> preparePurchase(UUID offerId, UUID buyerId, BigDecimal value) {
-        return prepareJob.prepare(PurchaseJobHandler.OPERATION_NAME, new PurchaseJobData(offerId, buyerId, value));
+        return prepareJob.prepare(new PurchaseJobData(offerId, buyerId, value));
     }
 
     @Override

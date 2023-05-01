@@ -35,7 +35,7 @@ public class BeanJobHandler implements HandleJob {
     private <T extends Serializable> void executeForJob(Job<T> job, BiConsumer<JobHandler<T>, T> operation) {
         //noinspection unchecked
         handlers.stream()
-                .filter(handler -> handler.canHandle(job.getOperationName()))
+                .filter(handler -> handler.canHandle(job.getData()))
                 .findFirst()
                 .ifPresentOrElse(
                         handler -> operation.accept((JobHandler<T>) handler, job.getData()),

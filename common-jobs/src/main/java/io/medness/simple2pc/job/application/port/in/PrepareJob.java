@@ -6,5 +6,5 @@ import java.io.Serializable;
 
 public interface PrepareJob {
 
-    <T extends Serializable> Job<T> prepare(String operationName, T jobData);
+    <T extends Serializable> Job<T> prepare(T jobData);
 }

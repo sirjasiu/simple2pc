@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class WithdrawJobHandler implements JobHandler<WithdrawJobData> {
 
-    public static final String OPERATION_NAME = "withdraw";
-
     private final Withdraw withdraw;
 
     private final FindAccount findAccount;
@@ -21,8 +19,8 @@ public class WithdrawJobHandler implements JobHandler<WithdrawJobData> {
     }
 
     @Override
-    public boolean canHandle(String operationName) {
-        return OPERATION_NAME.equals(operationName);
+    public boolean canHandle(Object data) {
+        return data instanceof WithdrawJobData;
     }
 
     @Override

@@ -22,9 +22,6 @@ public class Job<T extends Serializable> {
     @Id
     private UUID id;
 
-    @Column(name = "operation_name")
-    private String operationName;
-
     @Type(type = "json")
     @Column(columnDefinition = "jsonb")
     private JobData<T> data;
@@ -35,19 +32,14 @@ public class Job<T extends Serializable> {
     protected Job() {
     }
 
-    public Job(String operationName, T data) {
+    public Job(T data) {
         this.id = UUID.randomUUID();
         this.state = JobState.PREPARED;
-        this.operationName = operationName;
         this.data = new JobData<>(data);
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public String getOperationName() {
-        return operationName;
     }
 
     public T getData() {

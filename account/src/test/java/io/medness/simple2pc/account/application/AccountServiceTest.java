@@ -1,6 +1,5 @@
 package io.medness.simple2pc.account.application;
 
-import io.medness.simple2pc.account.application.job.WithdrawJobHandler;
 import io.medness.simple2pc.account.application.port.out.LoadAccount;
 import io.medness.simple2pc.account.application.port.out.PersistAccount;
 import io.medness.simple2pc.account.domain.Account;
@@ -123,7 +122,6 @@ class AccountServiceTest {
         service.prepareWithdraw(john.getId(), BigDecimal.ONE);
 
         //then
-        verify(prepareJob).prepare(WithdrawJobHandler.OPERATION_NAME,
-                new WithdrawJobData(john.getId(), BigDecimal.ONE));
+        verify(prepareJob).prepare(new WithdrawJobData(john.getId(), BigDecimal.ONE));
     }
 }

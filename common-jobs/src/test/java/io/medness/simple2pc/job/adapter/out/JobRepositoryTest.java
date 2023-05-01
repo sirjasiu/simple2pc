@@ -23,11 +23,11 @@ class JobRepositoryTest extends ItTest {
     @Test
     public void shouldProperlySerializeAndDeserializeJob() {
         // given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
 
         // when
         repository.save(job);
-        Optional<Job<String>> loadedJob = ((LoadJob)repository).findById(job.getId());
+        Optional<Job<String>> loadedJob = ((LoadJob) repository).findById(job.getId());
 
         // then
         assertThat(loadedJob).isPresent();

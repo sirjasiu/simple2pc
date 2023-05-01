@@ -56,7 +56,7 @@ public interface JobHandler<T extends Serializable> {
 ```
 When 2 phase commit sequence is required proper call to _prepareJob_ facility can be made, e.g.:
 ```java
-prepareJob.prepare("withdraw", new WithdrawJobData(accountId, value));
+prepareJob.prepare(new WithdrawJobData(accountId, value));
 ```
 This call executes `prepare` method from corresponding handler, stores the data for the expected second phase's 
 call and returns the id of job which can be either committed or aborted. Job is available via 

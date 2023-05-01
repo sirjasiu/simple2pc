@@ -1,6 +1,5 @@
 package io.medness.simple2pc.account.application;
 
-import io.medness.simple2pc.account.application.job.WithdrawJobHandler;
 import io.medness.simple2pc.account.application.port.in.CreateAccount;
 import io.medness.simple2pc.account.application.port.in.Deposit;
 import io.medness.simple2pc.account.application.port.in.FindAccount;
@@ -44,7 +43,7 @@ public class AccountService implements CreateAccount, FindAccount, Deposit, With
 
     @Override
     public Job<WithdrawJobData> prepareWithdraw(UUID accountId, BigDecimal value) {
-        return prepareJob.prepare(WithdrawJobHandler.OPERATION_NAME, new WithdrawJobData(accountId, value));
+        return prepareJob.prepare(new WithdrawJobData(accountId, value));
     }
 
     @Override

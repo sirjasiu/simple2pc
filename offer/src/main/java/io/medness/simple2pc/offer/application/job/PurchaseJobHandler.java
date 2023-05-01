@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class PurchaseJobHandler implements JobHandler<PurchaseJobData> {
 
-    public static final String OPERATION_NAME = "purchase";
-
     private final Purchase purchase;
 
     private final Reservation reservation;
@@ -21,8 +19,8 @@ public class PurchaseJobHandler implements JobHandler<PurchaseJobData> {
     }
 
     @Override
-    public boolean canHandle(String operationName) {
-        return OPERATION_NAME.equals(operationName);
+    public boolean canHandle(Object data) {
+        return data instanceof PurchaseJobData;
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public interface JobHandler<T extends Serializable> {
 
-    boolean canHandle(String operationName);
+    boolean canHandle(Object data);
 
     void prepare(T data);
 

@@ -18,8 +18,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class BeanJobHandlerTest {
 
-    @Mock JobHandler<String> handler1;
-    @Mock JobHandler<String> handler2;
+    @Mock
+    JobHandler<String> handler1;
+    @Mock
+    JobHandler<String> handler2;
 
     BeanJobHandler handler;
 
@@ -32,7 +34,7 @@ class BeanJobHandlerTest {
     public void shouldPerformOperationForFirstHander() {
         // given
         when(handler1.canHandle(any())).thenReturn(true);
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
 
         // when
         handler.prepare(job);
@@ -46,7 +48,7 @@ class BeanJobHandlerTest {
     public void shouldPerformOperationForSecondHander() {
         // given
         when(handler2.canHandle(any())).thenReturn(true);
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
 
         // when
         handler.commit(job);
@@ -59,7 +61,7 @@ class BeanJobHandlerTest {
     @Test
     public void shouldThrowExceptionWhenHandlerCannotBeChosen() {
         // given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
 
         // expect
         assertThatThrownBy(() -> handler.abort(job))

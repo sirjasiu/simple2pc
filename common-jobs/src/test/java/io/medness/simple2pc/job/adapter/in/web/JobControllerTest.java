@@ -54,9 +54,9 @@ class JobControllerTest extends ItTest {
     @Test
     public void shouldCommitJob() throws Exception {
         // given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         repository.save(job);
-        when(handler.canHandle("op")).thenReturn(true);
+        when(handler.canHandle("data")).thenReturn(true);
 
         UUID jobId = job.getId();
         // when
@@ -77,9 +77,9 @@ class JobControllerTest extends ItTest {
     @Test
     public void shouldAbortJob() throws Exception {
         // given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         repository.save(job);
-        when(handler.canHandle("op")).thenReturn(true);
+        when(handler.canHandle("data")).thenReturn(true);
 
         UUID jobId = job.getId();
         // when
@@ -100,7 +100,7 @@ class JobControllerTest extends ItTest {
     @Test
     public void shouldFailWhenTryingToPerformActionOnFinalizedJob() throws Exception {
         // given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         job.commit();
         repository.save(job);
         when(handler.canHandle("op")).thenReturn(true);

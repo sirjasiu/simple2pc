@@ -41,11 +41,11 @@ class JobServiceTest {
     @Test
     public void shouldPrepareJobForTheFutureOperations() {
         // given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         when(persistJob.save(any(Job.class))).thenReturn(job);
 
         // when
-        Job<String> returnedJob = service.prepare("op", "data");
+        Job<String> returnedJob = service.prepare("data");
 
         // then
         assertThat(returnedJob).isEqualTo(job);
@@ -56,19 +56,19 @@ class JobServiceTest {
     @Test
     public void shouldThrowExceptionWhenOperationNotSupported() {
         // given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         when(persistJob.save(any(Job.class))).thenReturn(job);
         doThrow(new IllegalStateException("Operation not supported")).when(handleJob).prepare(job);
 
         // expect
-        assertThatThrownBy(() -> service.prepare("op", "data"))
+        assertThatThrownBy(() -> service.prepare("data"))
                 .isInstanceOf(IllegalStateException.class);
     }
 
     @Test
     public void shouldHandleCommit() {
         //given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         UUID jobId = job.getId();
         when(loadJob.<String>findById(jobId)).thenReturn(Optional.of(job));
 
@@ -83,7 +83,7 @@ class JobServiceTest {
     @Test
     public void shouldHandleAbort() {
         //given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         UUID jobId = job.getId();
         when(loadJob.<String>findById(jobId)).thenReturn(Optional.of(job));
 
@@ -98,7 +98,7 @@ class JobServiceTest {
     @Test
     public void shouldThrowExceptionWhenJobNotFound() {
         //given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         UUID jobId = job.getId();
 
         // expect
@@ -110,7 +110,7 @@ class JobServiceTest {
     @Test
     public void shouldThrowExceptionWhenJobIsAlreadyFinalized() {
         //given
-        Job<String> job = new Job<>("op", "data");
+        Job<String> job = new Job<>("data");
         UUID jobId = job.getId();
         when(loadJob.<String>findById(jobId)).thenReturn(Optional.of(job));
         job.commit();

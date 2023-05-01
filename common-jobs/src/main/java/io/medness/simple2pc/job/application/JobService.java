@@ -62,8 +62,8 @@ public class JobService implements PrepareJob, CommitJob, AbortJob, GenerateJobP
     }
 
     @Override
-    public <T extends Serializable> Job<T> prepare(String operationName, T jobData) {
-        Job<T> job = persistJob.save(new Job<>(operationName, jobData));
+    public <T extends Serializable> Job<T> prepare(T jobData) {
+        Job<T> job = persistJob.save(new Job<>(jobData));
         handleJob.prepare(job);
         return job;
     }
