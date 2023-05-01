@@ -12,8 +12,12 @@ Simple2pc.PRIORITY = 2
 Simple2pc.VERSION = "0.0.1"
 
 local function interpolate(string, captures, body)
-    table = captures or {}
-
+    table = {}
+    if captures then
+        for h, v in pairs(captures) do
+            table[h] = v
+        end
+    end
     local body_obj
     if type(body) == 'table' then
         body_obj = body
@@ -33,7 +37,7 @@ local function interpolate(string, captures, body)
 end
 
 function Simple2pc:access(conf)
-    local urls = conf.urls
+    local urls = {}
     local http_config = conf.http_config
     local request = kong.request
     local request_body = request.get_raw_body()
@@ -41,8 +45,8 @@ function Simple2pc:access(conf)
     local uri_captures = (ngx.ctx.router_matches or EMPTY).uri_captures or EMPTY
 
     -- interpolating urls with captures and body
-    for i = 1, #urls do
-        urls[i] = interpolate(urls[i], uri_captures, request_body)
+    for i = 1, #conf.urls do
+        urls[i] = interpolate(conf.urls[i], uri_captures, request_body)
     end
 
     local client = http.new()
