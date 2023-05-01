@@ -1,6 +1,6 @@
 # Examples
 
-All examples below are called against kong proxy running under http://localhost:8000 (see [docker compose definition](docker-compose.yml)) 
+All examples below are called against kong proxy running under http://localhost:8000 (see [docker compose definition](../docker-compose.yml)) 
 
 ## Happy path
 
