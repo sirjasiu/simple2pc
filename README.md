@@ -10,7 +10,7 @@ implementation. See https://en.wikipedia.org/wiki/Two-phase_commit_protocol for 
 
 The solution consist of two elements:
 * kong api gtw plugin
-* java simple 2 phase commit implementation based on Job-like interface.
+* java simple 2 phase commit implementation based on spring boot.
 
 ## Plugin
 
@@ -21,8 +21,7 @@ In the first phase plugin propagates raw messages to every of mentioned endpoint
 expects `202` (ACCEPTED) response for VOTE:YES state and any other for VOTE:NO, e.g. after bad request, service error 
 etc.
 
-The plugin also expects `location` header among response headers, so it could send the second phase request with  
-*commit* or *abort* message against this url. In both cases PATCH method is executed with the following body:
+The plugin also expects `location` header among response headers, so it could send the second phase request with *commit* or *abort* message against this url. In both cases PATCH method is executed with the following body:
 ```json
 {
   "state": "{STATE}"
@@ -35,6 +34,8 @@ that the service was voting:no, `abort` is sent to all endpoints - if the servic
 could point to a correct second phase endpoint, it is omitted. 
 
 > NOTE: Handing errors in the second phase is beyond this simple implementation.
+
+> NOTE: For implementation check [handler.lua](kong/simple2pc/handler.lua) - this implementation also supports url interpolation based on uri captures and request body
 
 ## Java microservices
 
@@ -53,11 +54,14 @@ public interface JobHandler<T extends Serializable> {
     void abort(T data);
 }
 ```
-and can be executed by port `PrepareJob` (see https://en.wikipedia.org/wiki/Hexagonal_architecture_(software)). 
-Mentioned port executes `prepare` method from corresponding handler, stores the data for the expected second phase's 
+When 2 phase commit sequence is required proper call to _prepareJob_ facility can be made, e.g.:
+```java
+prepareJob.prepare("withdraw", new WithdrawJobData(accountId, value));
+```
+This call executes `prepare` method from corresponding handler, stores the data for the expected second phase's 
 call and returns the id of job which can be either committed or aborted. Job is available via 
 ```http request
-PATCH {service_url}/api/v1/jobs/{jobId}
+PATCH http://example.com/api/v1/jobs/:jobId
 ```
 > NOTE: _common-jobs_ is autoconfigurable spring module, it delivers necessary services and controllers to the 
 > spring boot application it is used in. It also delivers its own flyway db migration in the simple2pc schema (see 
@@ -73,8 +77,8 @@ Solution consist of two separate microservices:
 When user wants to puchase a product available in the offer service it needs to send action of purchasing the product and at the same time it must spend necessary funds controlled in the account service. Several cases may occur here:
 * happy path - user has necessary funds and offer is available,
 * user doesn't has required funds - product should not be sold,
-* user wants to buy product for insufficient price,
-* user wants to buy already bought product,
+* user wants to buy product for insufficient price - product should not be sold and funds should not be used,
+* user wants to buy already bought product - funds should not be used,
 * some problems during performing purchase operation may occur.
 
 In all cases except the happy path both user's funds and offer's state should be rolled back.
@@ -84,7 +88,7 @@ In all cases except the happy path both user's funds and offer's state should be
 In the account service simple account implementation is delivered, with account and funds it holds. Account can be 
 created, fetched and two main operation on its funds can be executed: deposit and withdraw, e.g.
 ```http request
-POST {serverUrl}/api/v1/accounts 
+POST http://example.com/api/v1/accounts 
 Content-Type: application/json
 {
    "name": "John Smith"
@@ -129,19 +133,17 @@ Content-Type: application/json
 ```
 This operation if allowed ends up with 202 status code and delivers url to job that can be either committed or aborted.
 > NOTE: For the simplicity of the example in the prepare phase funds are not blocked, only validation if account 
-> exists and if it has enough funds is checked. In commit those funds are lowered. Abort does nothing.
+> exists and if it has enough funds is checked. In commit those funds are taken. Abort does nothing.
 
 ## Offer
 
-Offer service holds offers with their prices. Offer can be purchased and it can also be reserved. The second 
-mechanism is used for the 2pc mechanism. In the first phase offer is reserved for the account, during the second 
-phase it is either purchased by the same account - in commit, or the reservation is canceled - in abort. 
+Offer service holds offers with their prices. Offer can be created and purchased.  
 ```http request
 POST http://example.com/api/v1/offers 
 Content-Type: application/json
 {
    "name": "Chocolate",
-   "price: 1.50
+   "price": 1.50
 }
 ```
 ```http request
@@ -162,12 +164,12 @@ result after those operation should be as follows:
   "name": "Chocolate",
   "price": 1.50,
   "id": ":offerId",
-  "buyerId": null,
+  "buyerId": ":accountId",
   "reservation": false
 }
 ```
 
-Offer service also delivers additional, 2pc action api:
+Offer service also delivers additional, 2pc action api. This api delivers reservation functionality for the offer. In the first phase offer is reserved for the account, during the second phase it is either purchased by the same account - in _commit_, or the reservation is canceled - in _abort_.
 ```http request
 POST http://example.com/api/v1/offers/:offerId/prepare-actions
 Content-Type: application/json
@@ -178,6 +180,16 @@ Content-Type: application/json
 }
 ```
 This operation if allowed ends up with 202 status code and delivers url to job that can be either committed or aborted.
+Result after this operation should be as follows:
+```json
+{
+  "name": "Chocolate",
+  "price": 1.50,
+  "id": ":offerId",
+  "buyerId": ":accountId",
+  "reservation": true
+}
+```
 
 ## Kong
 
@@ -214,4 +226,4 @@ Check [examples](examples/examples.md).
 - [X] docker images build
 - [X] kong plugin
 - [X] execution
-- [ ] example calls
+- [X] example calls
