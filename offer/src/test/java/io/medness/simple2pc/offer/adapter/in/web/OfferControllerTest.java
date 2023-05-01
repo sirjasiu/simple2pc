@@ -87,20 +87,20 @@ class OfferControllerTest {
                                         {
                                             "action": "purchase",
                                             "price": 1.5,
-                                            "accountId": "d7fd5276-df86-4892-91a4-0fd832bacfdb"
+                                            "buyerId": "d7fd5276-df86-4892-91a4-0fd832bacfdb"
                                         }
                                         """.stripIndent()
                         ))
                 .andDo(print())
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("accountId").value("d7fd5276-df86-4892-91a4-0fd832bacfdb"))
+                .andExpect(jsonPath("buyerId").value("d7fd5276-df86-4892-91a4-0fd832bacfdb"))
                 .andReturn();
 
         Optional<Offer> offerOptional = findOffer.find(offer.getId());
 
         // then
         assertThat(offerOptional).isPresent();
-        assertThat(offerOptional.get().getAccountId()).isEqualTo(UUID.fromString("d7fd5276-df86-4892-91a4-0fd832bacfdb"));
+        assertThat(offerOptional.get().getBuyerId()).isEqualTo(UUID.fromString("d7fd5276-df86-4892-91a4-0fd832bacfdb"));
         assertThat(offerOptional.get().isReservation()).isFalse();
     }
 

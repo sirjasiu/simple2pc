@@ -19,8 +19,8 @@ public class Offer {
 
     private BigDecimal price;
 
-    @Column(name = "account_id")
-    private UUID accountId;
+    @Column(name = "buyer_id")
+    private UUID buyerId;
 
     private boolean reservation;
 
@@ -45,41 +45,41 @@ public class Offer {
         return price;
     }
 
-    public UUID getAccountId() {
-        return accountId;
+    public UUID getBuyerId() {
+        return buyerId;
     }
 
     public boolean isReservation() {
         return reservation;
     }
 
-    public void purchase(UUID accountId, BigDecimal funds) {
+    public void purchase(UUID buyerId, BigDecimal funds) {
         if (price.compareTo(funds) != 0) {
             throw new InsufficientFundsException();
         }
-        if (this.accountId != null && !this.accountId.equals(accountId)) {
+        if (this.buyerId != null && !this.buyerId.equals(buyerId)) {
             throw new AlreadyPurchasedException();
         }
-        this.accountId = accountId;
+        this.buyerId = buyerId;
         this.reservation = false;
     }
 
-    public void makeReservation(UUID accountId, BigDecimal funds) {
+    public void makeReservation(UUID buyerId, BigDecimal funds) {
         if (price.compareTo(funds) != 0) {
             throw new InsufficientFundsException();
         }
-        if (this.accountId != null && !this.accountId.equals(accountId)) {
+        if (this.buyerId != null && !this.buyerId.equals(buyerId)) {
             throw new AlreadyPurchasedException();
         }
-        this.accountId = accountId;
+        this.buyerId = buyerId;
         this.reservation = true;
     }
 
-    public void cancelReservation(UUID accountId) {
-        if (this.accountId != null && !this.accountId.equals(accountId)) {
+    public void cancelReservation(UUID buyerId) {
+        if (this.buyerId != null && !this.buyerId.equals(buyerId)) {
             throw new AlreadyPurchasedException();
         } else {
-            this.accountId = null;
+            this.buyerId = null;
             this.reservation = false;
         }
     }

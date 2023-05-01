@@ -42,25 +42,25 @@ public class OfferController {
     }
 
     @GetMapping("{offerId}")
-    public OfferResponse getAccount(@PathVariable UUID offerId) {
+    public OfferResponse getOffer(@PathVariable UUID offerId) {
         return OfferResponse.from(findOffer.get(offerId));
     }
 
     @PostMapping("{offerId}/actions")
-    public OfferResponse accountActions(@PathVariable UUID offerId, @RequestBody OfferActionRequest request) {
+    public OfferResponse offerActions(@PathVariable UUID offerId, @RequestBody OfferActionRequest request) {
         switch (request.action()) {
-            case purchase -> purchase.purchase(offerId, request.accountId(), request.price());
+            case purchase -> purchase.purchase(offerId, request.buyerId(), request.price());
         }
         return OfferResponse.from(findOffer.get(offerId));
     }
 
     @PostMapping("{offerId}/prepare-actions")
-    public ResponseEntity<Void> prepareAccountActions(@PathVariable UUID offerId,
+    public ResponseEntity<Void> prepareOfferActions(@PathVariable UUID offerId,
                                                       @RequestBody OfferActionRequest request,
                                                       UriComponentsBuilder uriComponentsBuilder) {
         return switch (request.action()) {
             case purchase -> {
-                Job<PurchaseJobData> prepareWithdraw = purchase.preparePurchase(offerId, request.accountId(),
+                Job<PurchaseJobData> prepareWithdraw = purchase.preparePurchase(offerId, request.buyerId(),
                         request.price());
                 yield ResponseEntity.accepted()
                         .header("location",

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public interface Reservation {
 
-    void makeReservation(UUID offerId, UUID accountId, BigDecimal value);
+    void makeReservation(UUID offerId, UUID buyerId, BigDecimal value);
 
-    void cancelReservation(UUID offerId, UUID accountId);
+    void cancelReservation(UUID offerId, UUID buyerId);
 }

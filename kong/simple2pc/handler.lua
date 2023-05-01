@@ -8,33 +8,32 @@ local EMPTY = pl_tablex.readonly({})
 
 local Simple2pc = {}
 
-
 Simple2pc.PRIORITY = 2
 Simple2pc.VERSION = "0.0.1"
 
-
 local function interpolate(string, captures, body)
-  table = captures or {}
+    table = captures or {}
 
-  local body_obj
-  if type(body) == 'table' then
-    body_obj = body
-  elseif body then
-    body_obj = cjson.decode(body)
-  end
-  if body_obj then
-    for h, v in pairs(body_obj) do
-      table[h] = v
+    local body_obj
+    if type(body) == 'table' then
+        body_obj = body
+    elseif body then
+        body_obj = cjson.decode(body)
     end
-  end
+    if body_obj then
+        for h, v in pairs(body_obj) do
+            table[h] = v
+        end
+    end
 
-  return (string:gsub('($%b{})',
-                     function(w) return table[w:sub(3, -2)] or w end))
+    return (string:gsub('($%b{})',
+            function(w)
+                return table[w:sub(3, -2)] or w
+            end))
 end
 
-
 function Simple2pc:access(conf)
-    local urls  = conf.urls
+    local urls = conf.urls
     local http_config = conf.http_config
     local request = kong.request
     local request_body = request.get_raw_body()
@@ -54,19 +53,19 @@ function Simple2pc:access(conf)
         local url = urls[i]
         client:set_timeouts(http_config.connect_timeout, http_config.send_timeout, http_config.read_timeout)
         local res, err = client:request_uri(url, {
-          method = 'POST',
-          body = request_body,
-          headers = request_headers
+            method = 'POST',
+            body = request_body,
+            headers = request_headers
         })
         client:set_keepalive(http_config.keepalive_timeout, http_config.keepalive_pool_size)
 
         if not res or res.status ~= 202 then
-          kong.log.err('Invalid response from upstream ', url, ' ', err or ' not accepted' )
+            kong.log.err('Invalid response from upstream ', url, ' ', err or ' not accepted')
         end
         first_phase_responses[url] = {
             status = res.status,
             location = res.headers['location'],
-            body = res.body or EMPTY}
+            body = res.body or EMPTY }
     end
 
     -- checking if all ready
@@ -77,7 +76,7 @@ function Simple2pc:access(conf)
         local res = first_phase_responses[url]
         if not res or res.status ~= 202 or not res.location then
             all_accepted = false
-            not_ok_responses[url] = res.body
+            not_ok_responses[url] = { body = res.body, status = res.status }
         end
     end
     if not all_accepted then
@@ -97,24 +96,28 @@ function Simple2pc:access(conf)
             client:set_timeouts(http_config.connect_timeout, http_config.send_timeout, http_config.read_timeout)
 
             local res, err = client:request_uri(url, {
-              method = 'PATCH',
-              body = second_phase_request_body,
-              headers = {
-                  ["Content-Type"] = "application/json",
-              },
+                method = 'PATCH',
+                body = second_phase_request_body,
+                headers = {
+                    ["Content-Type"] = "application/json",
+                },
             })
-            client:set_keepalive(http_config.keepalive_timeout, http_config.keepalive_pool_size)
 
             if not res then
-              kong.log.err('Could not perform second phase call', url, ' ', err or "not error")
+                kong.log.err('Could not perform second phase call', url, ' ', err or "not error")
             end
+            kong.log.err('Performed ', all_accepted and 'commit' or 'abort', ' action on ', url, ' with result ',
+                    res or 'unknown')
         end
     end
-
-
-    return kong.response.exit(all_accepted and 200 or 500, all_accepted and "OK" or not_ok_responses)
+    local highest_status = 200
+    for _ ,not_ok_response in pairs(not_ok_responses) do
+        if highest_status < (not_ok_response.status or 200) then
+            highest_status = not_ok_response.status
+        end
+    end
+    return kong.response.exit(all_accepted and 200 or highest_status, all_accepted and "OK" or not_ok_responses)
 
 end
-
 
 return Simple2pc

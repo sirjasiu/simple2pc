@@ -22,7 +22,7 @@ class OfferTest {
         offer.purchase(ACCOUNT_ID1, BigDecimal.ONE);
 
         // then
-        assertThat(offer.getAccountId()).isEqualTo(ACCOUNT_ID1);
+        assertThat(offer.getBuyerId()).isEqualTo(ACCOUNT_ID1);
         assertThat(offer.isReservation()).isFalse();
 
     }
@@ -72,7 +72,7 @@ class OfferTest {
         offer.purchase(ACCOUNT_ID1, BigDecimal.ONE);
 
         // then
-        assertThat(offer.getAccountId()).isEqualTo(ACCOUNT_ID1);
+        assertThat(offer.getBuyerId()).isEqualTo(ACCOUNT_ID1);
         assertThat(offer.isReservation()).isFalse();
     }
     @Test
@@ -84,7 +84,7 @@ class OfferTest {
         offer.makeReservation(ACCOUNT_ID1, BigDecimal.ONE);
 
         // then
-        assertThat(offer.getAccountId()).isEqualTo(ACCOUNT_ID1);
+        assertThat(offer.getBuyerId()).isEqualTo(ACCOUNT_ID1);
         assertThat(offer.isReservation()).isTrue();
 
     }
@@ -133,7 +133,7 @@ class OfferTest {
         offer.cancelReservation(ACCOUNT_ID1);
 
         // then
-        assertThat(offer.getAccountId()).isNull();
+        assertThat(offer.getBuyerId()).isNull();
         assertThat(offer.isReservation()).isFalse();
 
     }
@@ -148,7 +148,7 @@ class OfferTest {
         offer.cancelReservation(ACCOUNT_ID1);
 
         // then
-        assertThat(offer.getAccountId()).isNull();
+        assertThat(offer.getBuyerId()).isNull();
         assertThat(offer.isReservation()).isFalse();
 
     }

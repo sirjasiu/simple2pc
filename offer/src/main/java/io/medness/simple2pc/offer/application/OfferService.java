@@ -38,23 +38,23 @@ public class OfferService implements CreateOffer, FindOffer, Purchase, Reservati
     }
 
     @Override
-    public void purchase(UUID offerId, UUID accountId, BigDecimal value) {
-        get(offerId).purchase(accountId, value);
+    public void purchase(UUID offerId, UUID buyerId, BigDecimal value) {
+        get(offerId).purchase(buyerId, value);
     }
 
     @Override
-    public Job<PurchaseJobData> preparePurchase(UUID offerId, UUID accountId, BigDecimal value) {
-        return prepareJob.prepare(PurchaseJobHandler.OPERATION_NAME, new PurchaseJobData(offerId, accountId, value));
+    public Job<PurchaseJobData> preparePurchase(UUID offerId, UUID buyerId, BigDecimal value) {
+        return prepareJob.prepare(PurchaseJobHandler.OPERATION_NAME, new PurchaseJobData(offerId, buyerId, value));
     }
 
     @Override
-    public void makeReservation(UUID offerId, UUID accountId, BigDecimal value) {
-        get(offerId).makeReservation(accountId, value);
+    public void makeReservation(UUID offerId, UUID buyerId, BigDecimal value) {
+        get(offerId).makeReservation(buyerId, value);
     }
 
     @Override
-    public void cancelReservation(UUID offerId, UUID accountId) {
-        get(offerId).cancelReservation(accountId);
+    public void cancelReservation(UUID offerId, UUID buyerId) {
+        get(offerId).cancelReservation(buyerId);
     }
 
     @Override

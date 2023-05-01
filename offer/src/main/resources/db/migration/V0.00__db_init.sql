@@ -8,5 +8,5 @@ create table offer.offer
     price       numeric(12, 2) not null,
     name        varchar(128)   not null,
     reservation bool default false,
-    account_id  uuid
+    buyer_id    uuid
 );

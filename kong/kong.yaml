@@ -27,6 +27,12 @@ routes:
     strip_path: false
     service: account
     regex_priority: 0
+  - name: offerJobs
+    paths:
+      - /api/v1/jobs
+    strip_path: false
+    service: offer
+    regex_priority: 0
   - name: accounts2pcForbidden
     paths:
       - '~/api/v1/accounts/(?<accountId>\S+)/prepare-actions'
@@ -66,7 +72,7 @@ routes:
               - price:funds
           remove:
             body:
-              - accountId
+              - buyerId
     regex_priority: 120
   - name: offerSimple2pc
     paths:
@@ -76,5 +82,5 @@ routes:
         config:
           urls:
             - http://offer:8080/api/v1/offers/${offerId}/prepare-actions
-            - http://kong:8000/api/v1/accounts/${accountId}/prepare-withdraw
+            - http://kong:8000/api/v1/accounts/${buyerId}/prepare-withdraw
     regex_priority: 100

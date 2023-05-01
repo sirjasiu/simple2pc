@@ -91,7 +91,7 @@ Content-Type: application/json
 }
 ```
 ```http request
-POST {serverUrl}/api/v1/accounts/{accountId}/actions
+POST http://example.com/api/v1/accounts/:accountId/actions
 Content-Type: application/json
 {
    "action": "deposit",
@@ -99,7 +99,7 @@ Content-Type: application/json
 }
 ```
 ```http request
-POST {serverUrl}/api/v1/accounts/{accountId}/actions
+POST http://example.com/api/v1/accounts/:accountId/actions
 Content-Type: application/json
 {
    "action": "withdraw",
@@ -107,20 +107,20 @@ Content-Type: application/json
 }
 ```
 ```http request
-GET {serverUrl}/api/v1/accounts/{accountId}
+GET http://example.com/api/v1/accounts/:accountId
 ```
 result after those operation should be as follows:
 ```json
 {
   "name": "John Smith",
-  "id": {{accountId}},
+  "id": ":accountId",
   "funds": 100.0
 }
 ```
 
 Account service also delivers additional, 2pc action api:
 ```http request
-POST {serverUrl}/api/v1/accounts/{accountId}/prepare-actions
+POST http://example.com/api/v1/accounts/:accountId/prepare-actions
 Content-Type: application/json
 {
    "action": "withdraw",
@@ -137,7 +137,7 @@ Offer service holds offers with their prices. Offer can be purchased and it can 
 mechanism is used for the 2pc mechanism. In the first phase offer is reserved for the account, during the second 
 phase it is either purchased by the same account - in commit, or the reservation is canceled - in abort. 
 ```http request
-POST {serverUrl}/api/v1/offers 
+POST http://example.com/api/v1/offers 
 Content-Type: application/json
 {
    "name": "Chocolate",
@@ -145,36 +145,36 @@ Content-Type: application/json
 }
 ```
 ```http request
-POST {serverUrl}/api/v1/offers/{offerId}/actions
+POST http://example.com/api/v1/offers/:offerId/actions
 Content-Type: application/json
 {
    "action": "puchase",
-   "accountId": {accountId}
+   "buyerId": ":accountId"
    "price": 1.50
 }
 ```
 ```http request
-GET {serverUrl}/api/v1/offers/{offerId}
+GET http://example.com/api/v1/offers/:offerId
 ```
 result after those operation should be as follows:
 ```json
 {
   "name": "Chocolate",
-  "price: 1.50,
-  "id": {offerId},
-  "accountId": {accountId},
+  "price": 1.50,
+  "id": ":offerId",
+  "buyerId": null,
   "reservation": false
 }
 ```
 
 Offer service also delivers additional, 2pc action api:
 ```http request
-POST {serverUrl}/api/v1/offers/{oferId}/prepare-actions
+POST http://example.com/api/v1/offers/:offerId/prepare-actions
 Content-Type: application/json
 {
    "action": "purchase",
    "price": 1.5,
-   "accountId": {accountId}
+   "buyerId": ":accountId"
 }
 ```
 This operation if allowed ends up with 202 status code and delivers url to job that can be either committed or aborted.
@@ -187,7 +187,7 @@ Kong's configuration delivers several functionalities necessary for this solutio
 3. it provides translation from one method's body to another (in account when we are making purchase action must be 
    changed from _purchase_ to _withdraw_ and _price_ to _funds_) - this mapping is however only exposed internally, 
    for call to host **kong**
-4. eventually it overrides the default `/api/v1/offers/{offerId}/actions` method and uses **simple2pc** plugin for 
+4. eventually it overrides the default `/api/v1/offers/:offerId/actions` method and uses **simple2pc** plugin for 
    performing distributed transaction
 
 ## Execution
@@ -203,8 +203,9 @@ docker-compose up -d
 
 > NOTE: **docker-compose-dev.yml** is for development purpose, it sets up databases for both account and offer 
 > services, you can run it with _docker-compose -f docker-compose-dev.yml up -d_
+## Examples 
 
-Check [examples](examples) folder for example requests. 
+Check [examples](examples/examples.md). 
 
 ## Checklist
 - [x] common-jobs

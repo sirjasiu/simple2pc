@@ -8,6 +8,6 @@ import java.util.UUID;
 
 public interface Purchase {
 
-    void purchase(UUID offerId, UUID accountId, BigDecimal value);
-    Job<PurchaseJobData> preparePurchase(UUID offerId, UUID accountId, BigDecimal value);
+    void purchase(UUID offerId, UUID buyerId, BigDecimal value);
+    Job<PurchaseJobData> preparePurchase(UUID offerId, UUID buyerId, BigDecimal value);
 }

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
-public record PurchaseJobData(UUID offerId, UUID accountId, BigDecimal value) implements Serializable {
+public record PurchaseJobData(UUID offerId, UUID buyerId, BigDecimal value) implements Serializable {
 
     @Override
     public boolean equals(Object o) {
@@ -16,11 +16,11 @@ public record PurchaseJobData(UUID offerId, UUID accountId, BigDecimal value) im
             return false;
         }
         PurchaseJobData that = (PurchaseJobData) o;
-        return Objects.equals(offerId, that.offerId) && Objects.equals(accountId, that.accountId) && value.compareTo(that.value) == 0;
+        return Objects.equals(offerId, that.offerId) && Objects.equals(buyerId, that.buyerId) && value.compareTo(that.value) == 0;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(offerId, accountId, value);
+        return Objects.hash(offerId, buyerId, value);
     }
 }

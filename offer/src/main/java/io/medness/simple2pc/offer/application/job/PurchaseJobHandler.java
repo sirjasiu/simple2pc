@@ -27,16 +27,16 @@ public class PurchaseJobHandler implements JobHandler<PurchaseJobData> {
 
     @Override
     public void commit(PurchaseJobData data) {
-        purchase.purchase(data.offerId(), data.accountId(), data.value());
+        purchase.purchase(data.offerId(), data.buyerId(), data.value());
     }
 
     @Override
     public void prepare(PurchaseJobData data) {
-        reservation.makeReservation(data.offerId(), data.accountId(), data.value());
+        reservation.makeReservation(data.offerId(), data.buyerId(), data.value());
     }
 
     @Override
     public void abort(PurchaseJobData data) {
-        reservation.cancelReservation(data.offerId(), data.accountId());
+        reservation.cancelReservation(data.offerId(), data.buyerId());
     }
 }
